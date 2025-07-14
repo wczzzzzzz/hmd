@@ -45,7 +45,6 @@ kᵞ = zeros(nₚ,nₚ)
 @timeit to "calculate ∫∫∇q∇pdxdt" begin
     @timeit to "get elements" elements = getElements(nodes, entities["Ω"])
     prescribe!(elements, :EA=>(x,y,z)->EA, :ρA=>(x,y,z)->ρA)
-    prescribe!(elements, :α=>(x,y,z)->α, :β=>(x,y,z)->β)
     prescribe!(elements, :c=>(x,y,z)->c)
     @timeit to "calculate shape functions" set∇𝝭!(elements)
     𝑎 = ∫∫∇q∇pdxdt=>elements
@@ -58,7 +57,7 @@ end
     @timeit to "get elements" elements_3 = getElements(nodes, entities["Γ³"])
     @timeit to "get elements" elements_4 = getElements(nodes, entities["Γ⁴"])
     prescribe!(elements_1,:t=>(x,y,z)->0.0)
-    prescribe!(elements_1,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
+    prescribe!(elements_1,:g=>(x,y,z)->φ(x), :α=>(x,y,z)->α)
     prescribe!(elements_2,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_3,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_4,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
@@ -67,12 +66,8 @@ end
     @timeit to "calculate shape functions" set𝝭!(elements_3)
     @timeit to "calculate shape functions" set𝝭!(elements_4)
     𝑓 = ∫vtdΓ=>elements_1
-    𝑎ᵅ = ∫vgdΓ=>elements_1
-    𝑎ᵅ = ∫vgdΓ=>elements_2
-    𝑎ᵅ = ∫vgdΓ=>elements_4
-    𝑎ᵝ = ∫vgdΓ=>elements_2
-    𝑎ᵝ = ∫vgdΓ=>elements_3
-    𝑎ᵝ = ∫vgdΓ=>elements_4
+    𝑎ᵅ = ∫vgdΓ=>elements_1∪elements_2∪elements_4
+    𝑎ᵝ = ∫vgdΓ=>elements_2∪elements_3∪elements_4
     @timeit to "assemble" 𝑓(f)
     @timeit to "assemble" 𝑎ᵅ(kᵅ,fᵅ)
     @timeit to "assemble" 𝑎ᵝ(kᵝ,fᵝ)

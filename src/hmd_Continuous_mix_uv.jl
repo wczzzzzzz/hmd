@@ -22,13 +22,11 @@ c = (EA/ρA)^0.5
 
 const to = TimerOutput()
 gmsh.initialize()
-ndiv= 16
-ndiv_p = 16
-@timeit to "open msh file" gmsh.open("./msh/square/Tri6_"*string(ndiv)*".msh",
-"./msh/square/square_"*string(ndiv_p)*".msh",ndiv_p)
 
+@timeit to "open msh file" gmsh.open("./msh/square/Tri6_16.msh")
 @timeit to "get entities" entities = getPhysicalGroups()
 @timeit to "get nodes" nodes = get𝑿ᵢ()
+@timeit to "open msh file" gmsh.open("./msh/square/square_16.msh")
 @timeit to "get entities" entities_p = getPhysicalGroups()
 @timeit to "get nodes" nodes_p = get𝑿ᵢ()
 
@@ -68,17 +66,21 @@ end
     @timeit to "calculate shape functions" set𝝭!(elements_2)
     @timeit to "calculate shape functions" set𝝭!(elements_3)
     @timeit to "calculate shape functions" set𝝭!(elements_4)
+    @timeit to "get elements" elements_1p = getElements(nodes_p, entities_p["Γ¹"])
+    @timeit to "get elements" elements_2p = getElements(nodes_p, entities_p["Γ²"])
+    @timeit to "get elements" elements_3p = getElements(nodes_p, entities_p["Γ³"])
+    @timeit to "get elements" elements_4p = getElements(nodes_p, entities_p["Γ⁴"])
+    @timeit to "calculate shape functions" set𝝭!(elements_1p)
+    @timeit to "calculate shape functions" set𝝭!(elements_2p)
+    @timeit to "calculate shape functions" set𝝭!(elements_3p)
+    @timeit to "calculate shape functions" set𝝭!(elements_4p)
     prescribe!(elements_1p,:t=>(x,y,z)->0.0)
     prescribe!(elements_2p,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_3p,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_4p,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     𝑓ᵖ = ∫vtdΓ=>elements_1p
-    𝑎ᵅ = ∫vgdΓ=>elements_1
-    𝑎ᵅ = ∫vgdΓ=>elements_2
-    𝑎ᵅ = ∫vgdΓ=>elements_4
-    𝑎ᵝ = ∫vgdΓ=>elements_2p
-    𝑎ᵝ = ∫vgdΓ=>elements_3p
-    𝑎ᵝ = ∫vgdΓ=>elements_4p
+    𝑎ᵅ = ∫vgdΓ=>elements_1∪elements_2∪elements_4
+    𝑎ᵝ = ∫vgdΓ=>elements_2p∪elements_3p∪elements_4p
     @timeit to "assemble" 𝑓ᵖ(fₚ)
     @timeit to "assemble" 𝑎ᵅ(kᵅ,fᵅ)
     @timeit to "assemble" 𝑎ᵝ(kᵝ,fᵝ)

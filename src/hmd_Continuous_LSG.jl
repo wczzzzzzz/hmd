@@ -32,7 +32,7 @@ gmsh.initialize()
 @timeit to "get nodes" nodes = get𝑿ᵢ()
 
 nₚ = length(nodes)
-nₑ = length(elements)
+# nₑ = length(elements)
 k = zeros(nₚ,nₚ)
 kˢ = zeros(nₚ,nₚ)
 f = zeros(nₚ)
@@ -46,7 +46,7 @@ kᵞ = zeros(nₚ,nₚ)
     @timeit to "get elements" elements = getElements(nodes, entities["Ω"])
     prescribe!(elements, :EA=>(x,y,z)->EA, :ρA=>(x,y,z)->ρA)
     prescribe!(elements, :α=>(x,y,z)->α, :c=>(x,y,z)->c)
-    prescribe!(elements, :β=>(x,y,z)->β)
+    prescribe!(elements, :α=>(x,y,z)->β)
     @timeit to "calculate shape functions" set∇𝝭!(elements)
     𝑎 = ∫∫∇q∇pdxdt=>elements
     @timeit to "assemble" 𝑎(k)
@@ -64,25 +64,22 @@ end
     prescribe!(elements_2,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_3,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_4,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
-    prescribe!(elements_3t, :EA=>(x,y,z)->EA, :ρA=>(x,y,z)->ρA, :α=>(x,y,z)->α)
+    prescribe!(elements_3t, :EA=>(x,y,z)->EA, :ρA=>(x,y,z)->ρA, :α=>(x,y,z)->β)
     @timeit to "calculate shape functions" set𝝭!(elements_1)
     @timeit to "calculate shape functions" set𝝭!(elements_2)
     @timeit to "calculate shape functions" set𝝭!(elements_3)
     @timeit to "calculate shape functions" set𝝭!(elements_4)
-    @timeit to "calculate shape functions" set∇𝝭!(elements_3t,elements)
+    @timeit to "calculate shape functions" set∇𝝭!(elements_3t)
     𝑓 = ∫vtdΓ=>elements_1
-    𝑎ᵅ = ∫vgdΓ=>elements_1
-    𝑎ᵅ = ∫vgdΓ=>elements_2
-    𝑎ᵅ = ∫vgdΓ=>elements_4
-    𝑎ᵝ = ∫vgdΓ=>elements_2
-    𝑎ᵝ = ∫vgdΓ=>elements_3
-    𝑎ᵝ = ∫vgdΓ=>elements_4
+    𝑎ᵅ = ∫vgdΓ=>elements_1∪elements_2∪elements_4
+    𝑎ᵝ = ∫vgdΓ=>elements_2∪elements_3∪elements_4
     𝑎ᵞ = stabilization_bar_LSG=>elements
     𝑎ᵞ = stabilization_bar_LSG_Γ=>elements_3t
     @timeit to "assemble" 𝑓(f)
     @timeit to "assemble" 𝑎ᵅ(kᵅ,fᵅ)
     @timeit to "assemble" 𝑎ᵝ(kᵝ,fᵝ)
 end
+    # @timeit to "assemble" 𝑎ᵞ(kᵞ)
 
 @timeit to "solve" dt = [k+kᵅ+kᵞ -k-kᵞ;-k-kᵞ kᵝ+kᵞ]\[fᵅ;-f+fᵝ]
 d = dt[1:nₚ]
