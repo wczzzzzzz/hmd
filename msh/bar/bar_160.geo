@@ -9,8 +9,8 @@ Line(1) = {1,2};
 
 Transfinite Curve{1} = n+1;
 
-Physical Point("Γᵗ") = {1};
-Physical Point("Γᵍ") = {2};
+Physical Point("Γᵗ") = {2};
+Physical Point("Γᵍ") = {1};
 Physical Curve("Ω") = {1};
 
 Mesh.Algorithm = 1;

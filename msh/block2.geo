@@ -26,11 +26,12 @@ Line(11) = {3, 7};
 Line(12) = {4, 8};
 
 Curve Loop(1) = {1, 2, 3, 4};
-Curve Loop(2) = {5, 6, 7, 8};
-Curve Loop(3) = {1, 10, -5, -9};
+Curve Loop(2) = {4, 9, -8, -12}; 
+Curve Loop(3) = {5, 6, 7, 8};
 Curve Loop(4) = {2, 11, -6, -10};
-Curve Loop(5) = {3, 12, -7, -11};
-Curve Loop(6) = {4, 9, -8, -12}; 
+Curve Loop(5) = {1, 10, -5, -9};
+Curve Loop(6) = {3, 12, -7, -11};
+
 
 Plane Surface(1) = {1};
 Plane Surface(2) = {2};
@@ -42,12 +43,12 @@ Plane Surface(6) = {6};
 Surface Loop(1) = {1, 2, 3, 4, 5, 6};
 Volume(1) = {1};
 
-Physical Surface("Γ¹") = {2};
-Physical Surface("Γ²") = {1, 3, 4, 5, 6};
-Physical Surface("Γ³") = {};
-Physical Surface("Γ⁴") = {};
-Physical Surface("Γ⁵") = {};
-Physical Surface("Γ⁶") = {};
+Physical Surface("Γ¹") = {1};
+Physical Surface("Γ²") = {2};
+Physical Surface("Γ³") = {3};
+Physical Surface("Γ⁴") = {4};
+Physical Surface("Γ⁵") = {5};
+Physical Surface("Γ⁶") = {6};
 Physical Volume("Ω") = {1};
 
 Transfinite Curve{1:12} = n+1;

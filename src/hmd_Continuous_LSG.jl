@@ -25,7 +25,7 @@ gmsh.initialize()
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri6/16.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri3/4.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/拉伸压缩C=1.0/2.0_4.msh")
-@timeit to "open msh file" gmsh.open("./msh/square/square_16.msh")
+@timeit to "open msh file" gmsh.open("./msh/square/Tri6_16.msh")
 # @timeit to "open msh file" gmsh.open("./msh/square/Tri6_4")
 
 @timeit to "get entities" entities = getPhysicalGroups()
@@ -48,6 +48,7 @@ kᵞ = zeros(nₚ,nₚ)
     prescribe!(elements, :α=>(x,y,z)->α, :c=>(x,y,z)->c)
     prescribe!(elements, :α=>(x,y,z)->β)
     @timeit to "calculate shape functions" set∇𝝭!(elements)
+    @timeit to "calculate shape functions" set∇²𝝭!(elements)
     𝑎 = ∫∫∇q∇pdxdt=>elements
     @timeit to "assemble" 𝑎(k)
 end
@@ -57,8 +58,7 @@ end
     @timeit to "get elements" elements_2 = getElements(nodes, entities["Γ²"])
     @timeit to "get elements" elements_3 = getElements(nodes, entities["Γ³"])
     @timeit to "get elements" elements_4 = getElements(nodes, entities["Γ⁴"])
-    @timeit to "get elements" elements_3t = Seg2toTri3(elements_3,elements)
-    # @timeit to "get elements" elements_3t = Seg3toTri6(elements_3,elements)
+    @timeit to "get elements" elements_3t = Seg3toTri6(elements_3,elements)
     prescribe!(elements_1,:t=>(x,y,z)->0.0)
     prescribe!(elements_1,:g=>(x,y,z)->φ(x), :α=>(x,y,z)->α)
     prescribe!(elements_2,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
@@ -73,13 +73,17 @@ end
     𝑓 = ∫vtdΓ=>elements_1
     𝑎ᵅ = ∫vgdΓ=>elements_1∪elements_2∪elements_4
     𝑎ᵝ = ∫vgdΓ=>elements_2∪elements_3∪elements_4
-    𝑎ᵞ = stabilization_bar_LSG=>elements
-    𝑎ᵞ = stabilization_bar_LSG_Γ=>elements_3t
+    𝑎ᵞ = [
+    stabilization_bar_LSG=>elements,
+    stabilization_bar_LSG_Γ=>elements_3t,
+]
+    # 𝑎ᵞ = stabilization_bar_LSG_Γ=>elements_3t
     @timeit to "assemble" 𝑓(f)
     @timeit to "assemble" 𝑎ᵅ(kᵅ,fᵅ)
     @timeit to "assemble" 𝑎ᵝ(kᵝ,fᵝ)
+    @timeit to "assemble" 𝑎ᵞ(kᵞ)
 end
-    # @timeit to "assemble" 𝑎ᵞ(kᵞ)
+
 
 @timeit to "solve" dt = [k+kᵅ+kᵞ -k-kᵞ;-k-kᵞ kᵝ+kᵞ]\[fᵅ;-f+fᵝ]
 d = dt[1:nₚ]
@@ -125,7 +129,7 @@ for (i,node) in enumerate(nodes)
     # δds[i] = node.δd
     # es[i] = ds[i] - us[i]
 end
-face = zeros(nₑ,3)
+face = zeros(nₑ,6)
 for (i,elm) in enumerate(elements)
     face[i,:] .= [x.𝐼 for x in elm.𝓒]
 end
