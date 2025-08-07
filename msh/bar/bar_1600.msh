@@ -3,8 +3,8 @@ $MeshFormat
 $EndMeshFormat
 $PhysicalNames
 3
-0 1 "Γᵗ"
-0 2 "Γᵍ"
+0 1 "Γ¹"
+0 2 "Γ²"
 1 3 "Ω"
 $EndPhysicalNames
 $Nodes

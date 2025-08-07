@@ -32,7 +32,7 @@ gmsh.initialize()
 @timeit to "get nodes" nodes = get𝑿ᵢ()
 
 nₚ = length(nodes)
-# nₑ = length(elements)
+nₑ = length(elements)
 k = zeros(nₚ,nₚ)
 kˢ = zeros(nₚ,nₚ)
 f = zeros(nₚ)

@@ -30,11 +30,11 @@ for n in 1:nₜ
     q̇[n+1] = q̇[n] + Δt * q̈[n+1]  
 end
 
-invisible_line = lines!(ax, [0, 0], [0, 0], color = :white, label="Δt=0.005", visible=false)
+# invisible_line = lines!(ax, [0, 0], [0, 0], color = :white, label="Δt=0.005", visible=false)
 # blue_line = lines!(ax, t[1:2], q[1:2], color = :blue, label="Implictic Euler")
 # black_line = lines!(ax, t[1:2], 𝑢.(t[1:2]), color = :black, label="Exact Solution")
-red_line = lines!(ax, t[1:2], e[1:2], color = :red, label="error")
-leg = Legend(fig[1, 2], [red_line, invisible_line], ["error", "Δt=0.005"], position=(0.95, 0.95))
+# red_line = lines!(ax, t[1:2], e[1:2], color = :red, label="error")
+# leg = Legend(fig[1, 2], [red_line, invisible_line], ["error", "Δt=0.005"], position=(0.95, 0.95))
 # leg = Legend(fig[1, 2], [blue_line, black_line, invisible_line], ["Implictic Euler", "Exact Solution", "Δt=0.005"], position=(0.95, 0.95))
 
 # lines!(ax, t, q, color = :blue)
@@ -43,9 +43,17 @@ e = q - 𝑥
 lines!(t, e, color = :red)
 xlims!(ax, 0, 8)
 
-fig
+# fig
 
 # save("./fig/一维/Implicit_1d.png",fig)
-save("./fig/一维/Implicit_1d_e.png",fig)
+# save("./fig/一维/Implicit_1d_e.png",fig)
 
-
+# XLSX.openxlsx("./excel/Euler.xlsx", mode="rw") do xf
+#     Sheet = xf[2]
+#     for i in 1:length(t)
+#        Sheet["A$(i)"] = t[i]
+#        Sheet["B$(i)"] = q[i]
+#        Sheet["C$(i)"] = 𝑥[i]
+#        Sheet["D$(i)"] = e[i]
+#     end
+# end

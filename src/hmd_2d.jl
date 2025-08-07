@@ -44,7 +44,7 @@ gmsh.initialize()
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri6/16.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri3/4.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/拉伸压缩C=1.0/2.0_4.msh")
-@timeit to "open msh file" gmsh.open("./msh/square/square_16.msh")
+@timeit to "open msh file" gmsh.open("./msh/square/Tri3_8.msh")
 # @timeit to "open msh file" gmsh.open("./msh/square/Tri6_4")
 
 @timeit to "get entities" entities = getPhysicalGroups()
