@@ -31,24 +31,22 @@ for i in 1:nₑ
     k[i+1,i+1] += 𝑚/𝐿 - 𝑘/3*𝐿
 end
 
-𝑃₀ = 𝑚*q̇₀
-f[1] -= 𝑃₀
+k[1,:] .= 0.0
+k[:,1] .= 0.0
+k[1,1] = 1.0
+f[1] = q̇₀
 
-α = 1e12
-kᵅ = zeros(nₚ,nₚ)
-fᵅ = zeros(nₚ)
-kᵅ[1,1] += α
-fᵅ[1] += α*q₀
-kᵝ = zeros(nₚ,nₚ)
-fᵝ = zeros(nₚ)
-# kᵝ[1,1] += α
-kᵝ[nₚ,nₚ] += α
+k[nₚ,:] .= 0.0
+k[:,nₚ] .= 0.0
+k[nₚ,nₚ] = 1.0
+f[nₚ] = q₀ 
 
-d = [k+kᵅ -k;-k kᵝ]\[fᵅ;-f+fᵝ]
+
+d = k\f
 # δd = d[nₚ+1:2*nₚ]
 d = d[1:nₚ]
 
-e = d - 𝑢.(t)
+# e = d - 𝑢.(t)
 # lines!(t, e, color = :red)
 lines!(t, d, color = :blue)
 # lines!(t, δd, color = :red)
@@ -59,16 +57,3 @@ lines!(t, d, color = :blue)
 
 
 fig
-
-# save("./fig/一维/string_1d.png",fig)
-# save("./fig/一维/string_1d_e.png",fig)
-
-# XLSX.openxlsx("./excel/Euler.xlsx", mode="rw") do xf
-#     Sheet = xf[4]
-#     for i in 1:length(t)
-#        Sheet["A$(i)"] = t[i]
-#        Sheet["B$(i)"] = d[i]
-#        Sheet["C$(i)"] = 𝑥[i]
-#        Sheet["D$(i)"] = e[i]
-#     end
-# end

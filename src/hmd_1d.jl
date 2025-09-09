@@ -13,14 +13,15 @@ q̇₀ = 1.0
 q₀ = 1.0
 α = 1e12
 β = 1e12
-# 𝑡 = 0.0:0.005:8.0
-# 𝜔 = (kᶜ/m)^0.5
-# 𝑢(t) = q₀*cos(𝜔*t) + q̇₀/𝜔*sin(𝜔*t)
+t = 0.0:0.4:8.0
+𝜔 = (kᶜ/m)^0.5
+𝑢(t) = q₀*cos(𝜔*t) + q̇₀/𝜔*sin(𝜔*t)
 # 𝑥 = q₀.*cos.(𝜔.*𝑡) + q̇₀/𝜔.*sin.(𝜔.*𝑡)
 
 const to = TimerOutput()
 gmsh.initialize()
-@timeit to "open msh file" gmsh.open("./msh/bar/bar_1600.msh")
+# @timeit to "open msh file" gmsh.open("./msh/bar/bar_20.msh")
+@timeit to "open msh file" gmsh.open("./msh/bar/bar_un_20.msh")
 @timeit to "get entities" entities = getPhysicalGroups()
 @timeit to "get nodes" nodes = get𝑿ᵢ()
 
@@ -46,13 +47,11 @@ fᵝ = zeros(nₚ)
     @timeit to "get elements" elements_2 = getElements(nodes, entities["Γ²"])
     prescribe!(elements_1,:g=>(x,y,z)->1.0, :α=>(x,y,z)->α)
     prescribe!(elements_2,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
-    prescribe!(elements_2,:t=>(x,y,z)->-m*q̇₀)
+    prescribe!(elements_1,:t=>(x,y,z)->-m*q̇₀)
     @timeit to "calculate shape functions" set𝝭!(elements_1)
     @timeit to "calculate shape functions" set𝝭!(elements_2)
-    𝑓 = ∫vtdΓ=>elements_2
+    𝑓 = ∫vtdΓ=>elements_1
     𝑎ᵅ = ∫vgdΓ=>elements_1
-    # 𝑎ᵅ = ∫vgdΓ=>elements_g
-    # 𝑎ᵝ = ∫vgdΓ=>elements_t
     𝑎ᵝ = ∫vgdΓ=>elements_2
     @timeit to "assemble" 𝑓(f)
     @timeit to "assemble" 𝑎ᵅ(kᵅ,fᵅ)
@@ -68,12 +67,21 @@ push!(nodes, :d=>d)
 
 fig = Figure()
 ax = Axis(fig[1, 1])
-# lines!(ax, 𝑡, 𝑢, color = :black)
-# lines!(ax, t, d[[1,3:end...,2]], color = :blue)
-lines!(t, e[[1,3:end...,2]], color = :red)
+lines!(ax, t, 𝑢, color = :black)
+lines!(ax, t, d[[1,3:end...,2]], color = :blue)
+# lines!(t, e[[1,3:end...,2]], color = :red)
 xlims!(ax, 0, 8)
 fig
 
+# node_displacements = d[[1,3:end...,2]]
+# node_x = 1:length(node_displacements)
+# fig = Figure()
+# ax = Axis(fig[1, 1])
+# # lines!(ax, 𝑡, 𝑢, color = :black)
+# lines!(ax, t, node_displacements, color = :blue)
+# scatter!(ax, node_x, node_displacements, color = :red, markersize = 5)
+# xlims!(ax, 0, 8)
+# fig
 
 # include("import_hmd.jl")
 

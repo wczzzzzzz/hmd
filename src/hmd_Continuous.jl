@@ -25,7 +25,7 @@ gmsh.initialize()
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri6/16.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri3/4.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/拉伸压缩C=1.0/2.0_4.msh")
-@timeit to "open msh file" gmsh.open("./msh/square/Tri3_16.msh")
+@timeit to "open msh file" gmsh.open("./msh/square/Tri6_4.msh")
 # @timeit to "open msh file" gmsh.open("./msh/square/Tri6_4")
 
 @timeit to "get entities" entities = getPhysicalGroups()
@@ -85,8 +85,9 @@ prescribe!(elements_Ωᵍ,:∂u∂x=>(x,y,z)->∂u∂x(x,y))
 prescribe!(elements_Ωᵍ,:∂u∂y=>(x,y,z)->∂u∂t(x,y))
 prescribe!(elements_Ωᵍ,:∂u∂z=>(x,y,z)->0.0)
 set∇𝝭!(elements_Ωᵍ)
-𝐿₂ = log10.(L₂(elements_Ωᵍ))
-println(𝐿₂)
+# 𝐿₂ = log10.(L₂(elements_Ωᵍ))
+𝐻₁,𝐿₂ = log10.(H₁(elements_Ωᵍ))
+# println(𝐿₂)
 
 # gmsh.finalize()
 
@@ -117,7 +118,7 @@ for (i,node) in enumerate(nodes)
     # δds[i] = node.δd
     # es[i] = ds[i] - us[i]
 end
-face = zeros(nₑ,3)
+face = zeros(nₑ,6)
 for (i,elm) in enumerate(elements)
     face[i,:] .= [x.𝐼 for x in elm.𝓒]
 end
@@ -136,27 +137,35 @@ fig
 # # save("./fig/连续解/mix_Tri_6均布/t=25.png",fig)
 # # save("./fig/连续解/mix_Tri_6非均布/n=41.png",fig)
 
-# # index = [4,8,16,32]
-# # # index = [5,10,20,40]
-# # XLSX.openxlsx("./excel/hmd_Continuous(2).xlsx", mode="rw") do xf
-# #     Sheet = xf[5]
-# #     ind = findfirst(n->n==ndiv,index)+1
-# #     Sheet["A"*string(ind)] = log10(4/ndiv)
-# #     # Sheet["A"*string(ind)] = log10(nₚ)
-# #     # Sheet["B"*string(ind)] = 𝐻₁
-# #     Sheet["C"*string(ind)] = 𝐿₂
-# # end
+# ndiv = 32
 
-# # points = zeros(3,nₚ)
-# # for (i,node) in enumerate(nodes)
-# #     points[1,i] = node.x
-# #     points[2,i] = node.y
-# #     points[3,i] = node.d
-# # end
-# # cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE_STRIP,[x.𝐼 for x in elm.𝓒]) for elm in elements["Ω"]]
-# # vtk_grid("./vtk/hmd_Continuous/uniform_"*string(ndiv)*".vtu",points,cells) do vtk
-# #     vtk["d"] = [node.d for node in nodes]
-# # end
+# index = [4,8,16,32]
+# # index = [5,10,20,40]
+# XLSX.openxlsx("./excel/hmd_Continuous.xlsx", mode="rw") do xf
+# row = 2
+# for ind = index
+# # XLSX.openxlsx("./excel/hmd_Continuous(2).xlsx", mode="rw") do xf
+#     Sheet = xf[2]
+#     ind = findfirst(n->n==ndiv,index)+1
+#     Sheet["A1"] = "log10(h)"
+#     Sheet["B1"] = "𝐻₁"
+#     Sheet["C1"] = "𝐿₂"
+#     row += 1
+#     Sheet["A$row"] = log10(4/ndiv)
+#     Sheet["B$row"] = 𝐻₁
+#     Sheet["C$row"] = 𝐿₂
+# end
+
+points = zeros(3,nₚ)
+for (i,node) in enumerate(nodes)
+    points[1,i] = node.x
+    points[2,i] = node.y
+    points[3,i] = node.d
+end
+cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE_STRIP,[x.𝐼 for x in elm.𝓒]) for elm in elements["Ω"]]
+vtk_grid("./vtk/hmd_Continuous/uniform_"*string(ndiv)*".vtu",points,cells) do vtk
+    vtk["d"] = [node.d for node in nodes]
+end
 
 # # xs = [node.x for node in nodes]'
 # # ys = [node.y for node in nodes]'

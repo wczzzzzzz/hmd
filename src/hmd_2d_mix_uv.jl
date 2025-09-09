@@ -39,16 +39,12 @@ end
 
 const to = TimerOutput()
 gmsh.initialize()
-ndiv= 16
-ndiv_p = 16
-@timeit to "open msh file" gmsh.open("./msh/square/Tri6_"*string(ndiv)*".msh",
-"./msh/square/square_"*string(ndiv_p)*".msh",ndiv_p)
-
-# @timeit to "open msh file" gmsh.open("./msh/square/Tri6_16.msh",
-# "./msh/square/square_16.msh")
-
+# @timeit to "open msh file" gmsh.open("./msh/square/Tri6_16.msh")
+@timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri6/8.msh")
 @timeit to "get entities" entities = getPhysicalGroups()
 @timeit to "get nodes" nodes = get𝑿ᵢ()
+# @timeit to "open msh file" gmsh.open("./msh/square/Tri3_16.msh")
+@timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri3/8.msh")
 @timeit to "get entities" entities_p = getPhysicalGroups()
 @timeit to "get nodes" nodes_p = get𝑿ᵢ()
 
@@ -64,8 +60,8 @@ kᵝ = zeros(nₚ,nₚ)
 fᵝ = zeros(nₚ)
 
 @timeit to "calculate ∫∫∇q∇pdxdt" begin
-    @timeit to "get elements" elements = getElements(nodes, entities["Ω"])
-    @timeit to "get elements" elements_p = getElements(nodes_p, entities_p["Ω"])
+    @timeit to "get elements" elements = getElements(nodes, entities["Ω"], 8)
+    @timeit to "get elements" elements_p = getElements(nodes_p, entities_p["Ω"], 8)
     prescribe!(elements, :EA=>(x,y,z)->EA, :ρA=>(x,y,z)->ρA)
     prescribe!(elements_p, :EA=>(x,y,z)->EA, :ρA=>(x,y,z)->ρA)
     @timeit to "calculate shape functions" set∇𝝭!(elements)
@@ -77,14 +73,14 @@ fᵝ = zeros(nₚ)
 end
 
 @timeit to "calculate ∫vtdΓ, ∫vgdΓ" begin
-    @timeit to "get elements" elements_1 = getElements(nodes, entities["Γ¹"])
-    @timeit to "get elements" elements_2 = getElements(nodes, entities["Γ²"])
-    @timeit to "get elements" elements_3 = getElements(nodes, entities["Γ³"])
-    @timeit to "get elements" elements_4 = getElements(nodes, entities["Γ⁴"])
-    @timeit to "get elements" elements_1p = getElements(nodes_p, entities_p["Γ¹"])
-    @timeit to "get elements" elements_2p = getElements(nodes_p, entities_p["Γ²"])
-    @timeit to "get elements" elements_3p = getElements(nodes_p, entities_p["Γ³"])
-    @timeit to "get elements" elements_4p = getElements(nodes_p, entities_p["Γ⁴"])
+    @timeit to "get elements" elements_1 = getElements(nodes, entities["Γ¹"], 8)
+    @timeit to "get elements" elements_2 = getElements(nodes, entities["Γ²"], 8)
+    @timeit to "get elements" elements_3 = getElements(nodes, entities["Γ³"], 8)
+    @timeit to "get elements" elements_4 = getElements(nodes, entities["Γ⁴"], 8)
+    @timeit to "get elements" elements_1p = getElements(nodes_p, entities_p["Γ¹"], 8)
+    @timeit to "get elements" elements_2p = getElements(nodes_p, entities_p["Γ²"], 8)
+    @timeit to "get elements" elements_3p = getElements(nodes_p, entities_p["Γ³"], 8)
+    @timeit to "get elements" elements_4p = getElements(nodes_p, entities_p["Γ⁴"], 8)
     prescribe!(elements_1,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_2,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)
     prescribe!(elements_3,:g=>(x,y,z)->0.0, :α=>(x,y,z)->α)

@@ -44,7 +44,7 @@ gmsh.initialize()
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri6/16.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/Tri3/4.msh")
 # @timeit to "open msh file" gmsh.open("./msh/Non-uniform/拉伸压缩C=1.0/2.0_4.msh")
-@timeit to "open msh file" gmsh.open("./msh/square/Tri3_8.msh")
+@timeit to "open msh file" gmsh.open("./msh/square/Tri3_16.msh")
 # @timeit to "open msh file" gmsh.open("./msh/square/Tri6_4")
 
 @timeit to "get entities" entities = getPhysicalGroups()
@@ -188,6 +188,8 @@ fig
 
 # points = zeros(3,nₚ)
 # for (i,node) in enumerate(nodes)
+# # for node in nodes 
+# #     i = node.𝐼
 #     points[1,i] = node.x
 #     points[2,i] = node.y
 #     points[3,i] = node.d
@@ -195,9 +197,9 @@ fig
 # end
 # cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE_STRIP,[x.𝐼 for x in elm.𝓒]) for elm in elements["Ω"]]
 # # vtk_grid("./vtk/hmd_2d/error/non_uniform_Tri3_"*string(ndiv)*".vtu",points,cells) do vtk
-# vtk_grid("./vtk/hmd_2d/exact_d_"*string(ndiv)*".vtu",points,cells) do vtk
-#     # vtk["d"] = [node.d for node in nodes]
-#     vtk["精确解"] = us
+# vtk_grid("./vtk/hmd_2d/exact_d_16.vtu",points,cells) do vtk
+#     vtk["d"] = [node.d for node in nodes]
+#     # vtk["精确解"] = us
 # end
 
 # fₓ,fₜ,fₓₓ,fₜₜ = truncation_error(elements["Ω"],nₚ)
@@ -209,8 +211,8 @@ fig
 # ys = [node.y for node in nodes]'
 # zs = [node.z for node in nodes]'
 # points = [xs; ys; zs]
-# cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE_STRIP, [xᵢ.𝐼 for xᵢ in elm.𝓒]) for elm in elements["Ω"]]
-# vtk_grid("./vtk/hmd_2d/error/uniform_Tri3_"*string(ndiv), points, cells) do vtk
+# cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE_STRIP, [xᵢ.𝐼 for xᵢ in elm.𝓒]) for elm in elements]
+# vtk_grid("./vtk/hmd_2d/error/uniform_Tri3_", points, cells) do vtk
 #     # vtk["fₓ"] = fₓ
 #     # vtk["fₜ"] = fₜ
 #     # vtk["fₓₓ"] = fₓₓ
