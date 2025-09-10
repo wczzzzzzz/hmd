@@ -88,7 +88,8 @@ end
     @timeit to "assemble" 𝑎ᵝ(kᵝ,fᵝ)
 end
 
-@timeit to "solve" dt = [kᵤᵤ+kᵅ -kᵤₚ;-kᵤₚ' kᵝ]\[fᵅ;-fₚ+fᵝ]
+# @timeit to "solve" dt = [kᵤᵤ+kᵅ -kᵤₚ;-kᵤₚ' kᵝ]\[fᵅ;-fₚ+fᵝ]
+dt = [kᵤᵤ+kᵅ -kᵤₚ;-kᵤₚ' kᵝ]\[fᵅ;-fₚ+fᵝ]
 d = dt[1:nᵤ]
 # δd = dt[nᵤ+1:end]
 push!(nodes, :d=>d)
