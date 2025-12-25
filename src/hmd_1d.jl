@@ -13,15 +13,15 @@ q̇₀ = 1.0
 q₀ = 1.0
 α = 1e12
 β = 1e12
-t = 0.0:0.4:8.0
+t = 0.0:0.005:8.0
 𝜔 = (kᶜ/m)^0.5
 𝑢(t) = q₀*cos(𝜔*t) + q̇₀/𝜔*sin(𝜔*t)
 # 𝑥 = q₀.*cos.(𝜔.*𝑡) + q̇₀/𝜔.*sin.(𝜔.*𝑡)
 
 const to = TimerOutput()
 gmsh.initialize()
-# @timeit to "open msh file" gmsh.open("./msh/bar/bar_20.msh")
-@timeit to "open msh file" gmsh.open("./msh/bar/bar_un_20.msh")
+@timeit to "open msh file" gmsh.open("./msh/bar/bar_1600.msh")
+# @timeit to "open msh file" gmsh.open("./msh/bar/bar_un_20.msh")
 @timeit to "get entities" entities = getPhysicalGroups()
 @timeit to "get nodes" nodes = get𝑿ᵢ()
 

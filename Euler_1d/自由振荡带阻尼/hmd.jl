@@ -12,7 +12,7 @@ ax = Axis(fig[1, 1])
 # 𝑢(t) = θ₀*cos(𝜔*𝑡) + (θ̇₀/𝜔)*sin(𝜔*𝑡)
 # 𝑥 = 𝑢.(𝑡)
 𝑥 = θ₀.*cos.(𝜔.*𝑡) + θ̇₀/𝜔.*sin.(𝜔.*𝑡)
-# lines!(ax, 𝑡, 𝑥, color = :black)
+lines!(ax, 𝑡, 𝑥, color = :black)
 
 dt = 0.01
 t = collect(0.0:dt:10.0)
@@ -50,8 +50,8 @@ d = [k+kᵅ -k;-k kᵝ]\[fᵅ;-f+fᵝ]
 d = d[1:nₚ]
 
 e = d - 𝑥
-lines!(t, e, color = :red)
-# lines!(t, d, color = :blue)
+# lines!(t, e, color = :red)
+lines!(t, d, color = :blue)
 # lines!(t, δd, color = :red)
 
 fig
